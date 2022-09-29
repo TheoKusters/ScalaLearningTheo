@@ -1,6 +1,6 @@
 lazy val fps = project
   .in(file("fps"))
-  .settings( name           := "fps"
+  .settings( name          := "fps"
     , version              := "0.1.0"
     , scalaVersion         := "3.2.0"
     , libraryDependencies ++=
@@ -9,7 +9,7 @@ lazy val fps = project
 
 lazy val aoc = project
   .in(file("aoc"))
-  .settings( name           := "aoc"
+  .settings( name          := "aoc"
     , version              := "0.1.0"
     , scalaVersion         := "3.2.0"
     , libraryDependencies ++=
