@@ -16,10 +16,9 @@ object IsSorted:
 object printIsSorted extends App:
 
     import IsSorted.*
-//    def printIsSorted: Unit =
-    println(isSorted(Array(1,2,3,4,5), (a: Int, b: Int)=> b >= a))
-    println(isSorted(Array(-0), (a: Int, b: Int)=> b >= a))
-    println(!isSorted(Array(1,6,9,2,12), (a: Int, b: Int)=> b >= a))
-    println(isSorted(Array('A','B'), (a: Char, b: Char)=> b >= a))
-    println(isSorted(Array('a','B'), (a: Char, b: Char)=> b >= a))
-    println(isSorted(Array(true,false), (a: Boolean, b: Boolean)=> b >= a))
+    println(isSorted(Array(1,2,3,4,5), (a: Int, b: Int) => b >= a))
+    println(isSorted(Array(-0), (a: Int, b: Int) => b >= a))
+    println(!isSorted(Array(1,6,9,2,12), (a: Int, b: Int) => b >= a))
+    println(isSorted(Array('A','B'), (a: Char, b: Char) => b >= a))
+    println(isSorted(Array('a','B'), (a: Char, b: Char) => b >= a))
+    println(isSorted(Array(true,false), (a: Boolean, b: Boolean) => b >= a))
