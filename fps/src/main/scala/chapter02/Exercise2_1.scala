@@ -51,3 +51,4 @@ object PrintCalcFunctions extends App:
     println(formatResult("absolute value", -42, abs))
     println(formatResult("factorial", 7, factorial))
     println(formatResult("Fibonacci value in position", 8, fib))
+

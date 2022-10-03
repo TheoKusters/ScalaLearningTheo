@@ -23,4 +23,3 @@ object printIsSorted extends App:
     println(isSorted(Array('A','B'), (a: Char, b: Char)=> b >= a))
     println(isSorted(Array('a','B'), (a: Char, b: Char)=> b >= a))
     println(isSorted(Array(true,false), (a: Boolean, b: Boolean)=> b >= a))
-    
