@@ -1,10 +1,19 @@
 package chapter02
 
 import IsSorted.*
+import org.scalacheck.{Gen, Properties}
+import org.scalacheck.Prop.forAll
 
-class Exercise2_2Suite {
+object Exercise2_2Props  extends Properties("sorted") {
 
-  assert(isSorted(Array(1,2,1,4,5), (a: Int, b: Int)=> b >= a), "Array sortedArray is not sorted")
-  assert(!isSorted(Array(5,4,3,2,1), (a: Int, b: Int)=> b >= a), "Array unsortedArray is sorted")
+  val genIntArray = Gen.containerOf[Array, Int](
+    Gen.chooseNum(Int.MinValue, 100)
+  )
+  val smallInteger = Gen.choose(0,100)
+  val bigInteger = Gen.choose(1000,2000)
+  val genIntArraySorted = genIntArray.map(_.sorted)
+
+  property("notSortedArray") = forAll(genIntArray, smallInteger, bigInteger) {(array,smallInt,bigInt) => !isSorted(array :+ bigInt :+ smallInt, (a: Int, b: Int) => b >= a ) }
+  property("SortedArray") = forAll(genIntArraySorted) {array => isSorted(array, (a: Int, b: Int) => b >= a ) }
 
 }
