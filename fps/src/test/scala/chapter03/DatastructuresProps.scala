@@ -1,58 +1,66 @@
 package chapter03
 
-import org.scalacheck.{Gen, Properties}
-import org.scalacheck.Prop.forAll
-import List.*
+import org.scalacheck.*
 
-val int1 = Gen.choose(0, 100)
-val int2 = Gen.choose(0, 100)
-val int3 = Gen.choose(0, 100)
-//val genIntList = Gen.containerOf[List: Int] (
-//  Gen.chooseNum(Int.MinValue, Int.MaxValue)
-//)
+import chapter03.{List => MyList}
 
-object DatastructuresProps  extends Properties("datastructures") {
+object Generators:
+  import Prop.*
+
+  val int1: Gen[Int] = Gen.choose(0, 100)
+  val int2: Gen[Int] = Gen.choose(0, 100)
+  val int3: Gen[Int] = Gen.choose(0, 100)
+
+  val genList: Gen[MyList[Int]] =
+    for {
+      size  <- Gen.choose(0, 1000)
+      slist <- Gen.listOfN(size, Arbitrary.arbInt.arbitrary)
+    } yield slist.foldLeft(List.empty)((l,e) => MyList.append(l,e))
+
+  val genSingular: Gen[Int] = Gen.choose[Int](-1000, 1000)
+
+object DatastructuresProps  extends Properties("datastructures"):
+  import Generators.*
+  import MyList.*
 
   property("testApply") =
-    forAll(int1, int2, int3) { (int1, int2, int3) =>
-      apply(int1, int2, int3) == Cons(int1, (Cons(int2, Cons(int3, Nil))))
-    }
+    Prop.forAll((int1: Int, int2: Int, int3: Int) =>
+      MyList.apply(int1, int2, int3) == Cons(int1, Cons(int2, Cons(int3, Nil)))
+    )
 
-  property("testTail") =
-    forAll(int1, int2, int3) { (int1, int2, int3) =>
-      tail(apply(int1, int2, int3)) == apply(int2, int3)
-    }
-
-//  property("testTail2") =
-//    forAll(genIntList) { (genIntList) =>
-//      tail(genIntList) ==
-//    }
+  property("testTailEqualsDropOne") =
+    Prop.forAll(genList)((l: MyList[Int]) =>
+      tail(l) == drop(l, 1)
+    )
 
   property("testSetHead1") =
-    forAll(int1, int2, int3) { (int1, int2, int3) =>
-      setHead(int3, apply(int1, int2, int3)) == apply(int3, int2, int3)
-    }
+    Prop.forAll(genList)((l: MyList[Int]) =>
+      tail(setHead(genSingular, l)) == tail(l)
+    )
 
-//  property("testSetHead2") = forAll(int1, int2, int3) { (int1, int2, int3) => setHead(Nil, apply(int1 int2 int3)) == apply(Nil) }
+  property("testSetHead2") =
+    Prop.forAll(genList)((l: MyList[Int]) =>
+      setHead(genSingular, l) == Cons(genSingular, tail(l))
+    )
 
   property("testDrop") =
-    forAll(int1, int2, int3) { (int1, int2, int3) =>
-      drop(apply(int1, int2, int3),2) == apply(int3)
-    }
+    def last[A](l: MyList[A], n: Int): MyList[A] =
+      assert(n >= 0)
+      assert(n <= size(l))
+      if size(l) == n then l else last(tail(l), n)
 
-//  property("testDropWhile") =
-//    forAll(int1, int2, int3) { (int1, int2, int3) =>
-//      dropWhile(apply(int1, int2, int3), x => x < 3) == apply(int2, int3)
-//    }
+    Prop.forAll(genList)((l: MyList[Int]) =>
+      Prop.forAll(Gen.choose(0, size(l)))(n =>
+        drop(l, n) == last(l, size(l) - n)
+      )
+    )
 
   property("testInit") =
-    forAll(int1, int2, int3) { (int1, int2, int3) =>
+    Prop.forAll { (int1: Int, int2: Int, int3: Int) =>
       init(apply(int1, int2, int3)) == apply(int1, int2)
     }
 
   property("testAppend") =
-    forAll(int1, int2, int3) { (int1, int2, int3) =>
+    Prop.forAll { (int1: Int, int2: Int, int3: Int) =>
       append(apply(int1, int2), int3) == apply(int1, int2, int3)
     }
-
-}

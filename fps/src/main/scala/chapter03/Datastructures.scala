@@ -1,12 +1,16 @@
 package chapter03
 
 import scala.annotation.tailrec
+import scala.runtime.Nothing$
 
 sealed trait List[+A]
 case object Nil extends List[Nothing]
 case class Cons[+A] (head: A, tail: List[A]) extends List[A]
 
 object List:
+  def empty[A]: List[A] =
+    Nil
+
   def sum(ints: List[Int]): Int =
     ints match
       case Nil => 0
@@ -43,6 +47,14 @@ object List:
       else if (l == Nil) l
         else go(tail(l), n - 1)
     go(l, n)
+
+  // Added for test functionality
+  def size[A](l: List[A]): Int =
+    @tailrec
+    def go[A](l: List[A], n: Int): Int =
+      if (l == Nil) n
+      else go(tail(l), n + 1)
+    go(l, 0)
 
   def append[A](myList: List[A], element: A): List[A] =
     myList match
