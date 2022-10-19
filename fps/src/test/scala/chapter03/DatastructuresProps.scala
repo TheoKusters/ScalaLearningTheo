@@ -50,8 +50,8 @@ object DatastructuresProps  extends Properties("datastructures"):
       if size(l) == n then l else last(tail(l), n)
 
     Prop.forAll(genList)((l: MyList[Int]) =>
-      Prop.forAll(Gen.choose(0, size(l)))((n) =>
-        drop(l, n) == last(l, n)
+      Prop.forAll(Gen.choose(0, size(l)))(n =>
+        drop(l, n) == last(l, size(l) - n)
       )
     )
 
