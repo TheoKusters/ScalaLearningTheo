@@ -44,15 +44,15 @@ object DatastructuresProps  extends Properties("datastructures"):
     )
 
   property("testDrop") =
+    def last[A](l: MyList[A], n: Int): MyList[A] =
+      assert(n >= 0)
+      assert(n <= size(l))
+      if size(l) == n then l else last(tail(l), n)
+
     Prop.forAll(genList)((l: MyList[Int]) =>
-      val maxDrop = Gen.choose(0, size(l))
-      def go(l: MyList[Int], droppedList: MyList[Int], n: Int): MyList[Int] =
-        if (maxDrop > n)
-          l match
-            case (h, _) => append(droppedList, h)
-          go(tail(l), droppedList, n + 1)
-        else droppedList
-      drop(l, maxDrop) == go(l, MyList.empty, Gen.choose(0, size(l)))
+      Prop.forAll(Gen.choose(0, size(l)))((n) =>
+        drop(l, n) == last(l, n)
+      )
     )
 
   property("testInit") =
