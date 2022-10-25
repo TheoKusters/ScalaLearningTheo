@@ -15,23 +15,27 @@
 //
 // Your puzzle answer was 254575.
 
-import com.google.common.hash.Hashing
-import com.google.common.io.BaseEncoding
-import java.nio.charset.StandardCharsets
 import scala.annotation.tailrec
 import scala.io.*
+import java.security.MessageDigest
 
 object Day04 extends App {
 
   val INPUT = "bgvyzdsv"
   val start1 = System.currentTimeMillis
 
+  def md5(s: String) = {
+    MessageDigest.getInstance("MD5")
+      .digest(s.getBytes)
+      .map("%02X".format(_))
+      .mkString
+  }
+
   def findHash (base: String, startZeroes: Int): Int =
     val zeroes = Array.fill[Byte](startZeroes)(0).mkString
     @tailrec
     def go(n: Int): Int =
-      if (Hashing.md5().hashString(base + n, StandardCharsets.UTF_8)
-        .toString.substring(0,startZeroes) == zeroes) n
+      if (md5(base + n).startsWith(zeroes)) n
       else go(n + 1)
     go(0)
 

@@ -13,24 +13,31 @@
 //
 // Your puzzle answer was 1586300.
 
+import scala.collection.immutable.List
 import scala.io.*
 import scala.language.postfixOps
 
 object Day02 extends App {
-  
+
   val input =
     Source
-      .fromFile("aoc/src/resources/inputDay02.txt")
+      .fromResource("./inputDay02.txt")
       .getLines
       .toList
   
   val start1 = System.currentTimeMillis
 
-  def wrapping(dim: String): Int =
-    val List(l, w, h) = dim.split("x").toList.map(_.trim.toInt).sortWith(_ < _)
-    (l*w) + (2*l*w) + (2*l*h) + (2*w*h)
+  case class Box(l: Int, w: Int, h: Int)
 
-  println(s"Answer day 2, part 1: ${input.map(dim => wrapping(dim)).sum}  [${System.currentTimeMillis - start1 }ms]")
+  def wrappingPaper(box: Box): Int =
+    (box.l * box.w) + (2 * box.l * box.w) + (2 * box.l * box.h) + (2 * box.w * box.h)
+
+  def processBox(dim: String, f: Box => Int): Int =
+    val List(l, w, h) = dim.split("x").toList.map(_.trim.toInt).sortWith(_ < _)
+    val box = Box(l,w,h)
+    f(box)
+
+  println(s"Answer day 2, part 1: ${input.map(dim => processBox(dim,wrappingPaper)).sum}  [${System.currentTimeMillis - start1 }ms]")
 
 // --- Part Two ---
 // The elves are also running low on ribbon. Ribbon is all the same width, so they only have to worry about the length they need to order, which they would again like to be exact.
@@ -50,9 +57,8 @@ object Day02 extends App {
 
   val start2 = System.currentTimeMillis
 
-  def ribbon(dim: String): Int =
-    val List(l, w, h) = dim.split("x").toList.map(_.trim.toInt).sortWith(_ < _)
-    (2 * l) + (2 * w) + (l * w * h)
+  def ribbonLint(box: Box): Int =
+    (2 * box.l) + (2 * box.w) + (box.l * box.w * box.h)
 
-  println(s"Answer day 2, part 2: ${input.map(dim => ribbon(dim)).sum} [${System.currentTimeMillis - start2 }ms]")
+  println(s"Answer day 2, part 2: ${input.map(dim => processBox(dim,ribbonLint)).sum} [${System.currentTimeMillis - start2 }ms]")
 }

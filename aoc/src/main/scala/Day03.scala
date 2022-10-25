@@ -24,7 +24,7 @@ object Day03 extends App {
 
   val input =
     Source
-      .fromFile("aoc/src/resources/inputDay03.txt")
+      .fromResource("./inputDay03.txt")
       .toList
 
   val start1 = System.currentTimeMillis
@@ -34,11 +34,12 @@ object Day03 extends App {
   val LEFT = '<'
 
   def addStopToRoute(l: List[(Int, Int)], direction: Char): List[(Int, Int)] =
-    if (direction == UP) l.appended((l.last._1, l.last._2 + 1))
-    else if (direction == DOWN) l.appended((l.last._1, l.last._2 - 1))
-    else if (direction == RIGHT) l.appended((l.last._1 + 1, l.last._2))
-    else if (direction == LEFT) l.appended((l.last._1 - 1, l.last._2))
-    else l
+    direction match
+      case UP => l.appended((l.last._1, l.last._2 + 1))
+      case DOWN => l.appended((l.last._1, l.last._2 - 1))
+      case RIGHT => l.appended((l.last._1 + 1, l.last._2))
+      case LEFT => l.appended((l.last._1 - 1, l.last._2))
+      case _ => l
 
   println(s"Answer day 3, part 1: ${input.foldLeft(List((0,0)))(addStopToRoute).distinct.size} [${System.currentTimeMillis - start1 }ms]")
 
@@ -61,15 +62,12 @@ object Day03 extends App {
 
   val start2 = System.currentTimeMillis
   
-  val santaInput = input
-                    .zipWithIndex
-                    .collect { case (x, i) if (i % 2 == 0) => x }
-  val roboInput = input
-                    .zipWithIndex
-                    .collect {case (x, i) if !(i % 2 == 0) => x}
+  val (santaWithIndex, roboWithIndex) = input
+    .zipWithIndex
+    .partition(_._2 % 2 == 0)
   
-  val santaRoute = santaInput.foldLeft(List((0,0)))(addStopToRoute)
-  val roboRoute = roboInput.foldLeft(List((0,0)))(addStopToRoute)
+  val santaRoute = santaWithIndex.map(_._1).foldLeft(List((0,0)))(addStopToRoute)
+  val roboRoute = roboWithIndex.map(_._1).foldLeft(List((0,0)))(addStopToRoute)
 
   println(s"Answer day 3, part 2: ${santaRoute.appendedAll(roboRoute).distinct.size} [${System.currentTimeMillis - start2 }ms]")
 }

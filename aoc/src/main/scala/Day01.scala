@@ -23,18 +23,20 @@ object Day01 extends App {
 
   val input =
   Source
-    .fromFile("aoc/src/resources/inputDay01.txt")
+    .fromResource("./inputDay01.txt")
     .toList
 
   val start1 = System.currentTimeMillis
   val up = input.count(floorUp => floorUp == '(')
   val down = input.count(floorDown => floorDown == ')')
 
+  def processDirection(floor: Int, direction: Char): Int =
+    if (direction == '(') floor + 1
+    else if (direction == ')') floor - 1
+    else floor
+
   val floors = input
-                .foldLeft(0)((floor, direction)
-                  => if (direction == '(') floor + 1
-                      else if (direction == ')') floor - 1
-                      else floor)
+                .foldLeft(0)((floor, direction) => processDirection(floor, direction))
 
   println(s"Answer day 1, part 1: ${up - down}  [${System.currentTimeMillis - start1}ms]")
   println(s"Answer day 1, part 1: ${floors}  [${System.currentTimeMillis - start1}ms]")
