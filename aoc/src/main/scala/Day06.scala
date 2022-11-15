@@ -19,59 +19,76 @@
 //
 //  Your puzzle answer was 569999.
 
+import Day06.Inst
+
 import scala.annotation.tailrec
 import scala.io.*
 
-object Day06 extends App {
+object Day06 extends App:
 
-  val input =
+  // -- Modeling
+
+  sealed abstract class Inst[A](name: String, x0: Int, y0: Int, x1: Int, y1: Int):
+    def off(cur: A): A
+    def on(cur: A): A
+    def toggle(cur: A): A
+
+    def run(state: A): A =
+      name match
+        case "off"    => off(state)
+        case "on"     => on(state)
+        case "toggle" => toggle(state)
+
+    def affects(x: Int, y: Int): Boolean =
+      x >= x0 && y >= y0 && x <= x1 && y <= y1
+
+  object Inst:
+
+    def parseFrom[A](make: (String, Int, Int, Int, Int) => Inst[A])(commands: List[String]): List[Inst[A]] =
+      commands.map(_ match
+        case s"turn $name $x0,$y0 through $x1,$y1" => make(name, x0.toInt, y0.toInt, x1.toInt, y1.toInt)
+        case s"$name $x0,$y0 through $x1,$y1"      => make(name, x0.toInt, y0.toInt, x1.toInt, y1.toInt)
+        case _                                     => sys.error("Parsing error")
+      )
+
+  type Mat[A] = List[List[A]]
+
+  object Mat:
+
+    def tabulate[A](sizeX: Int, sizeY: Int)(start: A)(instructions: List[Inst[A]]): Mat[A] =
+      def process(x: Int, y: Int): A = instructions.foldLeft(start)((a,i) => if i.affects(x,y) then i.run(a) else a)
+      List.tabulate(sizeX,sizeY)(process)
+
+
+
+  //  -- Input --
+
+  val commands: List[String] =
     Source
-      .fromResource("./inputDay06.txt")
+      .fromResource("inputDay06.txt")
       .getLines()
       .toList
 
-//  val input = List("turn on 0,0 through 1,1","turn off 4,4 through 4,4","toggle 0,0 through 3,3")
+  //  --- Part One ---
 
   val start1 = System.currentTimeMillis
 
-  case class Instruction(action: String, fromX: Int, fromY: Int, toX: Int, toY: Int)
-//  case class Coordinate(x: Int, y: Int)
+  def booleanInstMaker(name: String, x0: Int, y0: Int, x1: Int, y1: Int): Inst[Boolean] =
+    new Inst[Boolean](name: String, x0: Int, y0: Int, x1: Int, y1: Int):
+      def off(cur: Boolean)    = false
+      def on(cur: Boolean)     = true
+      def toggle(cur: Boolean) = !cur
 
-  def parse(line:String) : Instruction =
-    line match
-      case s"turn on $startX,$startY through $endX,$endY" =>
-        Instruction("turn on", startX.toInt, startY.toInt, endX.toInt, endY.toInt)
-      case s"turn off $startX,$startY through $endX,$endY" =>
-        Instruction("turn off", startX.toInt, startY.toInt, endX.toInt, endY.toInt)
-      case s"toggle $startX,$startY through $endX,$endY" =>
-        Instruction("toggle", startX.toInt, startY.toInt, endX.toInt, endY.toInt)
-      case _ => sys.error("Parsing error")
-
-  def dim(x: Int, y: Int, currentLux: Int, i: Instruction, mode: String): Int =
-    if (x >= i.fromX && y >= i.fromY && x <= i.toX && y <= i.toY)
-      mode match
-        case "switch" =>
-          i.action match
-            case "toggle" => if (currentLux == 0) then 1 else 0
-            case "turn on" => 1
-            case "turn off" => 0
-        case "dim" =>
-           i.action match
-             case "toggle" => currentLux + 2
-             case "turn on" => currentLux + 1
-             case "turn off" => if (currentLux <= 0) then 0 else currentLux - 1
-    else currentLux
-
-  def processOneBulb(x: Int, y: Int, mode: String): Int =
-    input
-      .foldLeft(0)((currentLux,instruction)=>dim(x,y,currentLux,parse(instruction),mode))
-
-  val lightsOn = List
-    .tabulate(1000,1000)((x,y)=>processOneBulb(x, y, "switch"))
-    .flatten
-    .sum
+  val lightsOn: Int =
+    val parser = Inst.parseFrom(booleanInstMaker)
+    Mat
+      .tabulate(1000,1000)(false)(parser(commands))
+      .flatten
+      .count(_ == true)
 
   println(s"Answer day 6, part 1: $lightsOn [${System.currentTimeMillis - start1 }ms]")
+
+  assert(lightsOn == 569999)
 
 //  --- Part Two ---
 //  You just finish implementing your winning light pattern when you realize you mistranslated Santa 's message from Ancient Nordic Elvish
@@ -90,10 +107,21 @@ object Day06 extends App {
 
   val start2 = System.currentTimeMillis
 
-  val totalLux = List
-    .tabulate(1000, 1000)((x, y) => processOneBulb(x, y, "dim"))
-    .flatten
-    .sum
+  def intInstMaker(name: String, x0: Int, y0: Int, x1: Int, y1: Int): Inst[Int] =
+    new Inst[Int](name: String, x0: Int, y0: Int, x1: Int, y1: Int):
+      def off(cur: Int)    = if cur <= 0 then 0 else cur - 1
+      def on(cur: Int)     = cur + 1
+      def toggle(cur: Int) = cur + 2
+
+  val totalLux: Int =
+    val parser = Inst.parseFrom(intInstMaker)
+    Mat
+      .tabulate(1000,1000)(0)(parser(commands))
+      .flatten
+      .sum
 
   println(s"Answer day 6, part 2: $totalLux [${System.currentTimeMillis - start2 }ms]")
-}
+
+  assert(totalLux == 17836115)
+
+
