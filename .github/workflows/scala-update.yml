@@ -10,12 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Launch Scala Steward
     steps:
-      - name: Generate token
-        id: generate-token
-        uses: tibdex/github-app-token@v1
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
                
       - name: Import GPG key
         id: import_gpg
@@ -27,7 +21,7 @@ jobs:
       - name: Launch Scala Steward
         uses: scala-steward-org/scala-steward-action@v2
         with:
-          github-token: ${{ steps.generate-token.outputs.token }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           sign-commits: true
           signing-key: ${{ secrets.GPG_SIGNING_KEY_ID }}
           author-email: ${{ steps.import_gpg.outputs.email }}
