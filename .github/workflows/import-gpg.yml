@@ -1,7 +1,9 @@
 name: import-gpg
 
 on:
-  workflow_call:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * *'
 
 jobs:
   import-gpg:
