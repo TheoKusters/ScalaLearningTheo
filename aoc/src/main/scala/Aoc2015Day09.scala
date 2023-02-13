@@ -1,7 +1,7 @@
 import scala.annotation.tailrec
 import scala.io.*
 
-object Day09 extends App :
+object Aoc2015Day09 extends App :
 
   case class Distance(start: String, end: String, km: Int):
     def invert:

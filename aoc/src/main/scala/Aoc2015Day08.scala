@@ -1,7 +1,7 @@
 import scala.annotation.tailrec
 import scala.io.*
 
-object Day08 extends App :
+object Aoc2015Day08 extends App :
 
   case class Coding(inputString: String):
 
@@ -34,7 +34,7 @@ object Day08 extends App :
 
   val input: List[Coding] =
     Source
-      .fromResource("./inputDay08.txt")
+      .fromResource("inputAoc2015Day08.txt")
       .getLines()
       .map(Coding.apply)
       .toList

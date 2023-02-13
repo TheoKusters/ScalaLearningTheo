@@ -21,11 +21,11 @@
 import scala.annotation.tailrec
 import scala.io.*
 
-object Day05 extends App {
+object Aoc2015Day05 extends App {
 
   val input =
     Source
-      .fromResource("./inputDay05.txt")
+      .fromResource("inputAoc2015Day05.txt")
       .getLines()
       .toList
 

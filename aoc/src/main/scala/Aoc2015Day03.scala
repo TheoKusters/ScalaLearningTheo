@@ -20,11 +20,11 @@
 
 import scala.io.*
 
-object Day03 extends App {
+object Aoc2015Day03 extends App {
 
   val input =
     Source
-      .fromResource("./inputDay03.txt")
+      .fromResource("inputAoc2015Day03.txt")
       .toList
 
   val start1 = System.currentTimeMillis

@@ -19,7 +19,7 @@ import scala.annotation.tailrec
 import scala.io.*
 import java.security.MessageDigest
 
-object Day04 extends App {
+object Aoc2015Day04 extends App {
 
   val INPUT = "bgvyzdsv"
   val start1 = System.currentTimeMillis

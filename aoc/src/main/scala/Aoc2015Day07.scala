@@ -1,7 +1,7 @@
 import scala.annotation.tailrec
 import scala.io.*
 
-object Day07 extends App :
+object Aoc2015Day07 extends App :
 
   // ---------------------------------
   // Modelling
@@ -65,7 +65,7 @@ object Day07 extends App :
 
   val input =
     Source
-      .fromResource("./inputDay07.txt")
+      .fromResource("inputAoc2015Day07.txt")
       .getLines()
       .toList
 

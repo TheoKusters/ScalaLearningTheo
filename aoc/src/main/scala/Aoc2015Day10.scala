@@ -1,7 +1,7 @@
 import scala.annotation.tailrec
 import scala.io.*
 
-object Day10 extends App :
+object Aoc2015Day10 extends App :
 
   // Conway's constant ~ Look and Say: https://www.youtube.com/watch?v=ea7lJkEhytA
 
