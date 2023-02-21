@@ -17,11 +17,11 @@ import scala.collection.immutable.List
 import scala.io.*
 import scala.language.postfixOps
 
-object Day02 extends App {
+object Aoc2015Day02 extends App {
 
   val input =
     Source
-      .fromResource("./inputDay02.txt")
+      .fromResource("inputAoc2015Day02.txt")
       .getLines
       .toList
   

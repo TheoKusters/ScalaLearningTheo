@@ -19,12 +19,12 @@
 //
 //  Your puzzle answer was 569999.
 
-import Day06.Inst
+import Aoc2015Day06.Inst
 
 import scala.annotation.tailrec
 import scala.io.*
 
-object Day06 extends App:
+object Aoc2015Day06 extends App:
 
   // -- Modeling
 
@@ -65,7 +65,7 @@ object Day06 extends App:
 
   val commands: List[String] =
     Source
-      .fromResource("inputDay06.txt")
+      .fromResource("inputAoc2015Day06.txt")
       .getLines()
       .toList
 
