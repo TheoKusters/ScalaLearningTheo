@@ -20,13 +20,7 @@ object Aoc2016Day04 extends App :
       encrypted.startsWith(checkSum)
 
     def decryptedRoomName: String =
-      @tailrec
-      def go(n: List[Char], d: String): String =
-        n match
-          case h :: Nil   => d + decryptLetter(h)
-          case h :: t     => go(t, d + decryptLetter(h))
-          case Nil        => sys.error("Boom")
-      go(name.toList, "")
+      name.toList.foldLeft("")((d,c) => d = d + decryptLetter(c))
 
     private def decryptLetter(c: Char): Char =
       if (c == '-') then ' '
