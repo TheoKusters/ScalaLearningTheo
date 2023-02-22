@@ -20,7 +20,7 @@ object Aoc2016Day04 extends App :
       encrypted.startsWith(checkSum)
 
     def decryptedRoomName: String =
-      name.toList.foldLeft("")((d,c) => d = d + decryptLetter(c))
+      name.toList.foldLeft("")((d,c) => d + decryptLetter(c))
 
     private def decryptLetter(c: Char): Char =
       if (c == '-') then ' '
