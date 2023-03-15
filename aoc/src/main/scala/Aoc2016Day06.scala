@@ -1,4 +1,5 @@
 import scala.annotation.tailrec
+import scala.collection.MapView
 import scala.io.*
 
 object Aoc2016Day06 extends App :
@@ -13,13 +14,14 @@ object Aoc2016Day06 extends App :
       .getLines
       .toList
 
-  val answer1 = signals
-                  .map(_.toList)
-                  .transpose
-                  .map(_.groupBy(identity)
-                  .view.mapValues(_.size)
-                  .maxBy(_._2)._1)
-                  .mkString
+  def answer(part: MapView[Char, Int] => Char): String =
+    signals
+      .map(_.toList)
+      .transpose
+      .map(ll => part(ll.groupBy(identity).view.mapValues(_.size)))
+      .mkString
+
+  val answer1 = answer(_.maxBy(_._2)._1)
 
   println(s"Answer day ${day}, part 1: ${answer1} [${System.currentTimeMillis - start1 }ms]")
 
@@ -27,12 +29,6 @@ object Aoc2016Day06 extends App :
 
   val start2 = System.currentTimeMillis
 
-  val answer2 = signals
-                  .map(_.toList)
-                  .transpose
-                  .map(_.groupBy(identity)
-                  .view.mapValues(_.size)
-                  .minBy(_._2)._1)
-                  .mkString
+  val answer2 = answer(_.minBy(_._2)._1)
 
   println(s"Answer day ${day}, part 2: $answer2 [${System.currentTimeMillis - start2 }ms]")
