@@ -4,24 +4,28 @@ import scala.io.*
 object Aoc2016Day07 extends App :
 
   case class IpAddress(ipAddress: String):
+
+    def getIpAddress(f: ((String, Int)) => Boolean): Array[String] =
+      ipAddress.split("\\[|\\]").zipWithIndex.filter(f).map(_._1)
+    def superNet = getIpAddress(_._2 % 2 == 0)
+    def hyperNet = getIpAddress(_._2 % 2 != 0)
+
     def supportTLS: Boolean =
-      val (superNet, hyperNet) = ipAddress.split("\\[|\\]").zipWithIndex.partition(_._2 % 2 == 0)
       superNet.exists(hasABBA) && !hyperNet.exists(hasABBA)
 
     def supportSSL: Boolean =
-      val (superNet, hyperNet) = ipAddress.split("\\[|\\]").zipWithIndex.partition(_._2 % 2 == 0)
       superNet.flatMap(getABA).exists(aba => hyperNet.exists(hasBAB(_,aba)))
 
-    private def hasABBA(addressPart: (String, Int)): Boolean =
-      val partList = addressPart._1.sliding(4)
+    private def hasABBA(addressPart: String): Boolean =
+      val partList = addressPart.sliding(4)
       partList.foldLeft(false)((b,v) => b | (v(0) == v(3) & v(1) == v(2)) & v(0) != v(1))
 
-    def getABA(addressPart: (String, Int)): Vector[String] =
-      val partList = addressPart._1.sliding(3)
+    def getABA(addressPart: String): Vector[String] =
+      val partList = addressPart.sliding(3)
       partList.filter(v => v(0) == v(2) & v(0) != v(1)).toVector
 
-    def hasBAB(addressPart: (String, Int), aba: String): Boolean =
-      addressPart._1.sliding(3).exists(bab => bab(0) == aba(1) & bab(2) == aba(1) & bab(1) == aba(0))
+    def hasBAB(addressPart: String, aba: String): Boolean =
+      addressPart.sliding(3).exists(bab => bab(0) == aba(1) & bab(2) == aba(1) & bab(1) == aba(0))
 
 //  --- Part One ---
   val start1 = System.currentTimeMillis

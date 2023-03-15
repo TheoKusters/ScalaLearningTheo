@@ -5,10 +5,11 @@ import java.security.MessageDigest
 object Aoc2016Day05 extends App :
 
 //  --- Part One ---
+  val MD5: MessageDigest =
+    MessageDigest.getInstance("MD5")
 
   def md5(s: String) =
-    MessageDigest.getInstance("MD5")
-      .digest(s.getBytes)
+      MD5.digest(s.getBytes)
       .map("%02X".format(_))
       .mkString
 
